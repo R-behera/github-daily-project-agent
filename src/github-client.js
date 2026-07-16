@@ -31,7 +31,11 @@ export class GitHubClient {
 
     if (!response.ok) {
       const detail = payload?.message || `${response.status} ${response.statusText}`;
-      throw new Error(`GitHub API ${options.method || "GET"} ${path}: ${detail}`);
+      const error = new Error(
+        `GitHub API ${options.method || "GET"} ${path}: ${detail}`
+      );
+      error.status = response.status;
+      throw error;
     }
 
     return payload;
@@ -74,7 +78,26 @@ export class GitHubClient {
         has_issues: true,
         has_projects: false,
         has_wiki: false,
-        auto_init: false
+        auto_init: true
+      })
+    });
+  }
+
+  getRef(owner, repository, ref = "heads/main") {
+    return this.request(`/repos/${owner}/${repository}/git/ref/${ref}`);
+  }
+
+  getGitCommit(owner, repository, commitSha) {
+    return this.request(`/repos/${owner}/${repository}/git/commits/${commitSha}`);
+  }
+
+  createBootstrapFile(owner, repository) {
+    return this.request(`/repos/${owner}/${repository}/contents/.agent-bootstrap`, {
+      method: "PUT",
+      body: JSON.stringify({
+        message: "Initialize repository",
+        content: Buffer.from("Initializing generated project.\n").toString("base64"),
+        branch: "main"
       })
     });
   }
@@ -86,30 +109,33 @@ export class GitHubClient {
     });
   }
 
-  createTree(owner, repository, tree) {
+  createTree(owner, repository, tree, baseTree) {
     return this.request(`/repos/${owner}/${repository}/git/trees`, {
       method: "POST",
-      body: JSON.stringify({ tree })
+      body: JSON.stringify({
+        tree,
+        ...(baseTree ? { base_tree: baseTree } : {})
+      })
     });
   }
 
-  createCommit(owner, repository, treeSha, message) {
+  createCommit(owner, repository, treeSha, message, parents = []) {
     return this.request(`/repos/${owner}/${repository}/git/commits`, {
       method: "POST",
       body: JSON.stringify({
         message,
         tree: treeSha,
-        parents: []
+        parents
       })
     });
   }
 
-  createMainBranch(owner, repository, commitSha) {
-    return this.request(`/repos/${owner}/${repository}/git/refs`, {
-      method: "POST",
+  updateRef(owner, repository, commitSha) {
+    return this.request(`/repos/${owner}/${repository}/git/refs/heads/main`, {
+      method: "PATCH",
       body: JSON.stringify({
-        ref: "refs/heads/main",
-        sha: commitSha
+        sha: commitSha,
+        force: false
       })
     });
   }
@@ -129,7 +155,26 @@ export class GitHubClient {
   }
 
   async publishFiles(owner, repository, files, commitMessage) {
-    const tree = [];
+    let initializedWithBootstrap = false;
+    let ref;
+
+    try {
+      ref = await this.getRef(owner, repository);
+    } catch (error) {
+      if (error.status !== 404 && error.status !== 409) throw error;
+      await this.createBootstrapFile(owner, repository);
+      initializedWithBootstrap = true;
+      ref = await this.getRef(owner, repository);
+    }
+
+    const parentCommit = await this.getGitCommit(
+      owner,
+      repository,
+      ref.object.sha
+    );
+    const tree = initializedWithBootstrap
+      ? [{ path: ".agent-bootstrap", mode: "100644", type: "blob", sha: null }]
+      : [];
 
     for (const [filePath, content] of Object.entries(files)) {
       const blob = await this.createBlob(owner, repository, content);
@@ -141,14 +186,20 @@ export class GitHubClient {
       });
     }
 
-    const createdTree = await this.createTree(owner, repository, tree);
+    const createdTree = await this.createTree(
+      owner,
+      repository,
+      tree,
+      parentCommit.tree.sha
+    );
     const commit = await this.createCommit(
       owner,
       repository,
       createdTree.sha,
-      commitMessage
+      commitMessage,
+      [ref.object.sha]
     );
-    await this.createMainBranch(owner, repository, commit.sha);
+    await this.updateRef(owner, repository, commit.sha);
     await this.updateRepository(owner, repository, { default_branch: "main" });
     return commit;
   }

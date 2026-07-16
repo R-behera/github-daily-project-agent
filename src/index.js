@@ -75,15 +75,25 @@ if (dryRun) {
 let repository;
 try {
   repository = await client.getRepository(viewer.login, project.name);
-  console.log(`Repository ${repository.full_name} already exists; recording it.`);
+  console.log(`Repository ${repository.full_name} already exists; checking contents.`);
 } catch (error) {
-  if (!error.message.includes("Not Found")) throw error;
+  if (error.status !== 404) throw error;
   repository = await client.createRepository({
     name: project.name,
     description: project.description,
     visibility
   });
+}
 
+let hasMainBranch = true;
+try {
+  await client.getRef(viewer.login, project.name);
+} catch (error) {
+  if (error.status !== 404 && error.status !== 409) throw error;
+  hasMainBranch = false;
+}
+
+if (!hasMainBranch || repository.size === 0) {
   await client.publishFiles(
     viewer.login,
     project.name,
@@ -91,6 +101,8 @@ try {
     `Create ${project.name}`
   );
   await client.setTopics(viewer.login, project.name, project.topics);
+} else {
+  console.log(`Repository ${repository.full_name} already has content; skipping publish.`);
 }
 
 recordRun(stateFile, {
