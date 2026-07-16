@@ -91,6 +91,10 @@ export class GitHubClient {
     return this.request(`/repos/${owner}/${repository}/git/commits/${commitSha}`);
   }
 
+  getTree(owner, repository, treeSha) {
+    return this.request(`/repos/${owner}/${repository}/git/trees/${treeSha}`);
+  }
+
   createBootstrapFile(owner, repository) {
     return this.request(`/repos/${owner}/${repository}/contents/.agent-bootstrap`, {
       method: "PUT",
@@ -155,16 +159,14 @@ export class GitHubClient {
   }
 
   async publishFiles(owner, repository, files, commitMessage) {
-    let initializedWithBootstrap = false;
     let ref;
 
     try {
       ref = await this.getRef(owner, repository);
     } catch (error) {
       if (error.status !== 404 && error.status !== 409) throw error;
-      await this.createBootstrapFile(owner, repository);
-      initializedWithBootstrap = true;
-      ref = await this.getRef(owner, repository);
+      const bootstrap = await this.createBootstrapFile(owner, repository);
+      ref = { object: { sha: bootstrap.commit.sha } };
     }
 
     const parentCommit = await this.getGitCommit(
@@ -172,7 +174,15 @@ export class GitHubClient {
       repository,
       ref.object.sha
     );
-    const tree = initializedWithBootstrap
+    const currentTree = await this.getTree(
+      owner,
+      repository,
+      parentCommit.tree.sha
+    );
+    const hasBootstrap = currentTree.tree.some(
+      (entry) => entry.path === ".agent-bootstrap"
+    );
+    const tree = hasBootstrap
       ? [{ path: ".agent-bootstrap", mode: "100644", type: "blob", sha: null }]
       : [];
 
