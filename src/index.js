@@ -7,10 +7,12 @@ import {
   formatDate,
   validateProject
 } from "./generator.js";
+import { publishHuggingFace } from "./huggingface.js";
 import { readState, recordRun } from "./state.js";
 
 const args = new Set(process.argv.slice(2));
 const dryRun = args.has("--dry-run");
+const force = args.has("--force");
 const token = process.env.DAILY_AGENT_TOKEN || process.env.GH_TOKEN;
 const includePrivate = process.env.INCLUDE_PRIVATE === "true";
 const visibility = process.env.REPOSITORY_VISIBILITY || "public";
@@ -37,7 +39,7 @@ const state = readState(stateFile);
 const date = formatDate(now);
 
 const existingRun = state.runs.find((run) => run.date === date);
-if (existingRun && !dryRun) {
+if (existingRun && !dryRun && !force) {
   console.log(`Already created ${existingRun.repository} for ${date}.`);
   process.exit(0);
 }
@@ -59,7 +61,14 @@ console.log(
       owner: viewer.login,
       repository: project.name,
       template: project.template,
+      blueprint: project.blueprint,
+      architecture: project.architecture,
       files: Object.keys(project.files),
+      huggingFace: {
+        dataset: project.huggingFace.dataset.name,
+        model: project.huggingFace.model.name,
+        enabled: Boolean(process.env.HF_TOKEN)
+      },
       analyzedPublicRepositories: project.profile.sourceRepositoryCount,
       topLanguages: project.profile.languages.slice(0, 5).map((item) => item.name)
     },
@@ -105,11 +114,25 @@ if (!hasMainBranch || repository.size === 0) {
   console.log(`Repository ${repository.full_name} already has content; skipping publish.`);
 }
 
+let huggingFace = null;
+if (process.env.HF_TOKEN) {
+  huggingFace = publishHuggingFace(project);
+  console.log(`Published Hugging Face dataset: ${huggingFace.dataset}`);
+  console.log(`Published Hugging Face model: ${huggingFace.model}`);
+} else if (process.env.HF_REQUIRED === "true") {
+  throw new Error("HF_REQUIRED=true but the HF_TOKEN secret is not configured.");
+} else {
+  console.log("HF_TOKEN is not configured; skipping Hugging Face publishing.");
+}
+
 recordRun(stateFile, {
   date,
   repository: repository.full_name,
   url: repository.html_url,
   template: project.template,
+  blueprint: project.blueprint,
+  architecture: project.architecture,
+  huggingFace,
   createdAt: new Date().toISOString()
 });
 

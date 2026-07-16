@@ -1,11 +1,16 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { spawnSync } from "node:child_process";
 import {
   createProjectPlan,
   dateSuffix,
   formatDate,
   validateProject
 } from "../src/generator.js";
+import { industryBlueprints } from "../src/templates/industry-project.js";
 
 const viewer = {
   login: "example",
@@ -70,26 +75,84 @@ test("creates a deterministic valid project", async () => {
   assert.deepEqual(first.files, second.files);
   assert.ok(first.topics.includes("daily-agent-generated"));
   assert.ok(first.files["README.md"].includes("example"));
+  assert.ok(first.huggingFace.dataset.files["README.md"]);
+  assert.ok(first.huggingFace.model.files["model.json"]);
 });
 
-test("all template rotations produce complete projects", async () => {
-  const templateNames = new Set();
+test("all industry rotations produce complete, runnable projects", async () => {
+  const blueprintNames = new Set();
+  const baseDate = new Date("2026-07-16T12:00:00Z");
 
-  for (let day = 16; day <= 23; day += 1) {
+  for (let offset = 0; offset < industryBlueprints.length * 2; offset += 1) {
+    const date = new Date(baseDate);
+    date.setUTCDate(date.getUTCDate() + offset);
     const project = await createProjectPlan({
       client,
       viewer,
       repositories,
-      date: new Date(`2026-07-${day}T12:00:00Z`)
+      date
     });
 
     validateProject(project);
-    templateNames.add(project.template);
-    assert.ok(Object.keys(project.files).length >= 5);
+    blueprintNames.add(project.blueprint);
+    assert.ok(Object.keys(project.files).length >= 18);
     assert.ok(project.description.length >= 40);
   }
 
-  assert.equal(templateNames.size, 4);
+  assert.equal(blueprintNames.size, industryBlueprints.length);
+});
+
+test("every generated architecture passes its own tests and evaluation", async () => {
+  const baseDate = new Date("2026-07-16T12:00:00Z");
+
+  for (let offset = 0; offset < industryBlueprints.length; offset += 1) {
+    const date = new Date(baseDate);
+    date.setUTCDate(date.getUTCDate() + offset);
+    const project = await createProjectPlan({
+      client,
+      viewer,
+      repositories,
+      date
+    });
+    const directory = fs.mkdtempSync(
+      path.join(os.tmpdir(), "industry-project-")
+    );
+
+    try {
+      for (const [relativePath, content] of Object.entries(project.files)) {
+        const destination = path.join(directory, relativePath);
+        fs.mkdirSync(path.dirname(destination), { recursive: true });
+        fs.writeFileSync(destination, content);
+      }
+
+      const tests = spawnSync(
+        "python3",
+        ["-m", "unittest", "discover", "-s", "tests"],
+        { cwd: directory, encoding: "utf8" }
+      );
+      assert.equal(
+        tests.status,
+        0,
+        `${project.blueprint}: ${tests.stderr || tests.stdout}`
+      );
+
+      const evaluation = spawnSync("python3", ["evaluate.py"], {
+        cwd: directory,
+        env: {
+          ...process.env,
+          PYTHONPATH: path.join(directory, "src")
+        },
+        encoding: "utf8"
+      });
+      assert.equal(
+        evaluation.status,
+        0,
+        `${project.blueprint}: ${evaluation.stderr || evaluation.stdout}`
+      );
+    } finally {
+      fs.rmSync(directory, { recursive: true, force: true });
+    }
+  }
 });
 
 test("rejects unsafe project files", () => {

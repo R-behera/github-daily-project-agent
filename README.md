@@ -1,117 +1,129 @@
-# GitHub Daily Project Agent
+# GitHub Daily Industry AI Project Agent
 
-A zero-paid-API automation that studies broad patterns from your public GitHub
-repositories and publishes one small, original project repository each day.
+A zero-paid-LLM automation that creates one independent, production-oriented AI
+project repository every day. Each project includes architecture, runnable
+code, tests, a synthetic dataset, a trained lightweight model artifact,
+evaluation, CI, Docker support, model documentation, and dataset documentation.
 
-It runs entirely on GitHub Actions and uses deterministic local templates. It
-does not call OpenAI, Anthropic, Gemini, or any other paid AI service.
+When Hugging Face credentials are configured, the same daily run also creates
+a separate Hugging Face dataset repository and model repository.
 
-## What It Does
+## Daily Output
 
-Every day the agent:
+One daily run produces three linked repositories:
 
-1. Reads your public repositories through the GitHub API.
-2. Measures language, topic, description, and recent-repository patterns.
-3. Selects a project type from a rotating template catalog.
-4. Generates at least five useful project files.
-5. Validates paths and required documentation.
-6. Creates one public repository with the date in its name.
-7. Records the successful run to prevent duplicates.
+1. A GitHub source repository containing the complete project.
+2. A Hugging Face dataset repository with JSONL data and a dataset card.
+3. A Hugging Face model repository with a trained baseline and model card.
 
-Current project types include:
+Every GitHub project is independent. It does not add unrelated files to an
+older project repository.
 
-- Repository health CLI
-- Interactive language dashboard
-- Python public-activity report
-- Portfolio-based project idea board
+## Project Catalog
+
+The agent rotates through industry-relevant architectures:
+
+- Clinical RAG safety gateway
+- Agentic incident-response orchestrator
+- Hybrid semantic-search service
+- Knowledge-graph risk engine
+- RAG evaluation lab
+- Production AI observability monitor
+- Applied ML support router
+- Multimodal document-retrieval baseline
+- Audio event-triage baseline
+- Contextual-bandit decision simulator
+
+Projects cover LLM-agent architecture, RAG, healthcare AI, applied machine
+learning, knowledge graphs, semantic search, multimodal retrieval, evaluation,
+observability, audio ML, and reinforcement learning.
+
+## What Every GitHub Repository Contains
+
+- `README.md` with purpose, quick start, and safety limitations
+- `ARCHITECTURE.md` with a Mermaid system diagram
+- `src/` Python inference pipeline
+- `train.py` reproducible baseline trainer
+- `evaluate.py` held-out evaluation and release gate
+- `tests/` unit tests
+- `data/train.jsonl` and `data/test.jsonl`
+- `artifacts/model.json` trained transparent model
+- `MODEL_CARD.md` and `DATASET_CARD.md`
+- `SECURITY.md`
+- Dockerfile
+- GitHub Actions CI
+- MIT source-code license
+
+The generated baseline uses standard-library Python. It is intentionally small
+enough to train and test for free on GitHub Actions.
+
+## Hugging Face Publishing
+
+Hugging Face publishing requires:
+
+- An account-level write token stored as the `HF_TOKEN` Actions secret.
+- An optional `HF_NAMESPACE` repository variable containing your username or
+  an organization in which you have write access.
+
+If `HF_NAMESPACE` is empty, artifacts are published under the authenticated
+Hugging Face user account.
+
+An organization cannot be joined automatically without an invitation, an
+approved join request, or membership granted by an organization administrator.
+
+The generated datasets are small and synthetic. Their cards state provenance,
+intended use, limitations, and risks. The generated model repositories contain
+transparent baselines, not unsupported claims of state-of-the-art performance.
 
 ## Cost
 
-The agent is designed to cost $0:
+The design avoids paid services:
 
-- No paid AI model or API.
-- No hosted database.
-- No external scheduler.
-- No package dependencies.
-- Public GitHub repositories use free GitHub-hosted Actions.
+- Public GitHub Actions runner
+- No paid LLM API
+- No hosted database
+- Standard-library generated projects
+- Small public Hugging Face artifacts
 
-GitHub can delay scheduled jobs during busy periods. Scheduled workflows in
-inactive public repositories may be disabled after 60 days, so the workflow
-records successful daily runs in this controller repository.
+Hugging Face public storage is best-effort and must be used responsibly. This
+agent intentionally creates small artifacts with documentation rather than
+large checkpoints.
 
-## Security
+## Schedule
 
-The workflow uses only public repository metadata by default:
+The controller runs every day at 9:17 AM in `America/New_York`.
 
-```text
-INCLUDE_PRIVATE=false
-```
+GitHub can delay scheduled jobs during busy periods. The controller records
+each successful run in `state/history.json` to prevent duplicate daily output.
 
-This prevents private repository names, descriptions, languages, or topics
-from being copied into public generated projects.
-
-The built-in `GITHUB_TOKEN` cannot create repositories outside the controller
-repository. Store a separate token in the `DAILY_AGENT_TOKEN` Actions secret.
-The token must be able to create repositories and write repository contents.
-
-Never place the token in source code or commit it to Git.
-
-## Local Test
-
-The project has no dependencies:
+## Local Validation
 
 ```bash
 npm test
 DAILY_AGENT_TOKEN="$(gh auth token)" npm run dry-run
 ```
 
-The dry run reads your public GitHub metadata and prints the planned repository
-without creating it.
+A dry run analyzes public GitHub metadata and validates the planned project
+without creating any repositories.
 
-## Run Manually
+## GitHub Configuration
 
-Open the repository's **Actions** tab, select **Create daily project**, and use
-**Run workflow**.
-
-To test without publishing, enable the `dry_run` option.
-
-## Schedule
-
-The workflow runs daily at 9:17 AM in `America/New_York`. The non-round minute
-reduces the chance of GitHub Actions scheduling congestion.
-
-Edit `.github/workflows/daily-project.yml` to change the schedule.
-
-## Configuration
-
-| Variable | Default | Purpose |
+| Name | Type | Purpose |
 | --- | --- | --- |
-| `DAILY_AGENT_TOKEN` | required | Token stored as an Actions secret |
-| `INCLUDE_PRIVATE` | `false` | Whether private metadata may be analyzed |
-| `REPOSITORY_VISIBILITY` | `public` | Visibility of generated repositories |
-| `STATE_FILE` | `state/history.json` | Daily deduplication history |
-| `GENERATION_DATE` | current date | Fixed date for local testing |
+| `DAILY_AGENT_TOKEN` | Actions secret | Creates and writes GitHub repositories |
+| `HF_TOKEN` | Actions secret | Creates Hugging Face models and datasets |
+| `HF_NAMESPACE` | Repository variable | Hugging Face username or organization |
+| `HF_REQUIRED` | Repository variable | Fail the run if HF publishing is unavailable |
+| `INCLUDE_PRIVATE` | Environment setting | Defaults to `false` to prevent metadata leaks |
+| `REPOSITORY_VISIBILITY` | Environment setting | Defaults to `public` |
 
-## Project Structure
+## Safety Boundaries
 
-```text
-.
-├── .github/workflows/daily-project.yml
-├── src/
-│   ├── templates/
-│   ├── analyze.js
-│   ├── generator.js
-│   ├── github-client.js
-│   ├── index.js
-│   ├── seed.js
-│   └── state.js
-├── state/history.json
-├── test/generator.test.js
-└── package.json
-```
-
-## Responsible Use
-
-One repository per day can still create a lot of public material. Keep the
-generated repositories useful, review them periodically, and archive or delete
-projects you do not want to maintain.
+- Only public GitHub metadata is analyzed by default.
+- Healthcare examples are synthetic and cannot be used for diagnosis.
+- No real personal, patient, customer, audio, image, or financial records are
+  included.
+- Synthetic evaluation scores verify code behavior, not production quality.
+- High-impact agent actions require explicit approval in the generated design.
+- Generated projects should be reviewed and maintained rather than treated as
+  disposable repository volume.

@@ -11,6 +11,11 @@ on:
         required: false
         default: false
         type: boolean
+      force:
+        description: "Publish even if today's history entry already exists"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -25,6 +30,10 @@ jobs:
     timeout-minutes: 10
     env:
       DAILY_AGENT_TOKEN: ${{ secrets.DAILY_AGENT_TOKEN }}
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      HF_NAMESPACE: ${{ vars.HF_NAMESPACE }}
+      HF_REQUIRED: ${{ vars.HF_REQUIRED || 'false' }}
+      HF_REPOSITORY_VISIBILITY: "public"
       INCLUDE_PRIVATE: "false"
       REPOSITORY_VISIBILITY: "public"
       STATE_FILE: state/history.json
@@ -39,6 +48,14 @@ jobs:
           node-version: "22"
           package-manager-cache: false
 
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install Hugging Face client
+        run: python -m pip install --disable-pip-version-check "huggingface_hub>=0.35,<2"
+
       - name: Run tests
         run: npm test
 
@@ -46,6 +63,8 @@ jobs:
         run: |
           if [ "${{ inputs.dry_run }}" = "true" ]; then
             node src/index.js --dry-run
+          elif [ "${{ inputs.force }}" = "true" ]; then
+            node src/index.js --force
           else
             node src/index.js
           fi

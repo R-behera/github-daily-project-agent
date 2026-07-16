@@ -1,16 +1,8 @@
 import { analyzeProfile, GENERATED_TOPIC } from "./analyze.js";
 import { createRandom } from "./seed.js";
-import { activityReport } from "./templates/activity-report.js";
-import { languageDashboard } from "./templates/language-dashboard.js";
-import { projectIdeaBoard } from "./templates/project-idea-board.js";
-import { repoHealthCli } from "./templates/repo-health-cli.js";
+import { industryProject } from "./templates/industry-project.js";
 
-const templates = [
-  repoHealthCli,
-  languageDashboard,
-  activityReport,
-  projectIdeaBoard
-];
+const templates = [industryProject];
 
 export const formatDate = (date) => date.toISOString().slice(0, 10);
 
@@ -75,6 +67,28 @@ export function validateProject(project) {
 
   if (Object.keys(project.files).length < 5) {
     errors.push("Generated project must contain at least five files.");
+  }
+
+  if (!project.blueprint || !project.architecture) {
+    errors.push("Generated project must declare a blueprint and architecture.");
+  }
+
+  for (const requiredFile of [
+    "ARCHITECTURE.md",
+    "MODEL_CARD.md",
+    "DATASET_CARD.md",
+    "SECURITY.md",
+    "artifacts/model.json",
+    "data/train.jsonl",
+    "data/test.jsonl"
+  ]) {
+    if (!project.files[requiredFile]) {
+      errors.push(`Missing industry project file: ${requiredFile}`);
+    }
+  }
+
+  if (!project.huggingFace?.dataset?.files || !project.huggingFace?.model?.files) {
+    errors.push("Generated project must include Hugging Face dataset and model artifacts.");
   }
 
   for (const [path, content] of Object.entries(project.files)) {
