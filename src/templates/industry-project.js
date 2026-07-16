@@ -767,7 +767,7 @@ const splitRecords = (records) => ({
 
 const trainPrototypeModel = (blueprint, trainRecords) => {
   const prototypes = {};
-  const documents = [];
+  const documentsById = new Map();
 
   for (const record of trainRecords) {
     prototypes[record.label] ||= {};
@@ -775,7 +775,7 @@ const trainPrototypeModel = (blueprint, trainRecords) => {
       prototypes[record.label][token] =
         (prototypes[record.label][token] || 0) + 1;
     }
-    documents.push({
+    documentsById.set(record.source, {
       id: record.source,
       label: record.label,
       text: record.context,
@@ -783,6 +783,7 @@ const trainPrototypeModel = (blueprint, trainRecords) => {
     });
   }
 
+  const documents = [...documentsById.values()];
   const documentFrequency = {};
   for (const document of documents) {
     for (const token of new Set(tokenize(document.text))) {
@@ -973,23 +974,22 @@ def read_jsonl(path: Path) -> list[dict]:
 
 def train(records: list[dict], base_model: dict) -> dict:
     prototypes: dict[str, Counter] = defaultdict(Counter)
-    documents = []
+    documents_by_id = {}
     for record in records:
         prototypes[record["label"]].update(
             tokenize(f'{record["input"]} {record["context"]}')
         )
-        documents.append(
-            {
-                "id": record["source"],
-                "label": record["label"],
-                "text": record["context"],
-                "metadata": {
-                    "synthetic": True,
-                    "domain": base_model["domain"],
-                },
-            }
-        )
+        documents_by_id[record["source"]] = {
+            "id": record["source"],
+            "label": record["label"],
+            "text": record["context"],
+            "metadata": {
+                "synthetic": True,
+                "domain": base_model["domain"],
+            },
+        }
 
+    documents = list(documents_by_id.values())
     document_frequency = Counter()
     for document in documents:
         document_frequency.update(set(tokenize(document["text"])))
@@ -1250,6 +1250,8 @@ class PipelineTests(unittest.TestCase):
         result = self.pipeline.run(${JSON.stringify(blueprint.examples[0][0])})
         self.assertIn(result["prediction"], ${JSON.stringify(model.labels)})
         self.assertGreaterEqual(len(result["evidence"]), 1)
+        evidence_ids = [item["id"] for item in result["evidence"]]
+        self.assertEqual(len(evidence_ids), len(set(evidence_ids)))
         self.assertIn("requires_review", result)
 
 
