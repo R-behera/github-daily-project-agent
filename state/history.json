@@ -7,8 +7,12 @@
       "template": "industryProject",
       "blueprint": "clinical-rag-safety",
       "architecture": "retrieval",
-      "huggingFace": null,
-      "createdAt": "2026-07-16T17:58:25.810Z"
+      "huggingFace": {
+        "namespace": "RKB109",
+        "dataset": "https://huggingface.co/datasets/RKB109/clinical-rag-safety-gateway-20260716-dataset",
+        "model": "https://huggingface.co/RKB109/clinical-rag-safety-gateway-20260716-model"
+      },
+      "createdAt": "2026-07-16T18:10:05.882Z"
     }
   ]
 }
