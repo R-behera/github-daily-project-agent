@@ -4,3 +4,5 @@ node_modules/
 output/
 coverage/
 .agent-output/
+__pycache__/
+*.pyc
