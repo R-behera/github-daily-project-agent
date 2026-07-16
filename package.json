@@ -1,0 +1,16 @@
+{
+  "name": "github-daily-project-agent",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A zero-cost GitHub Actions agent that generates one personalized repository per day.",
+  "type": "module",
+  "scripts": {
+    "generate": "node src/index.js",
+    "dry-run": "node src/index.js --dry-run",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}

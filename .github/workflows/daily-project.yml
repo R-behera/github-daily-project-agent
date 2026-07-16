@@ -1,0 +1,63 @@
+name: Create daily project
+
+on:
+  schedule:
+    - cron: "17 9 * * *"
+      timezone: "America/New_York"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Generate and validate without creating a repository"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-project-generator
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      DAILY_AGENT_TOKEN: ${{ secrets.DAILY_AGENT_TOKEN }}
+      INCLUDE_PRIVATE: "false"
+      REPOSITORY_VISIBILITY: "public"
+      STATE_FILE: state/history.json
+
+    steps:
+      - name: Check out controller
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Run tests
+        run: npm test
+
+      - name: Generate today's project
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            node src/index.js --dry-run
+          else
+            node src/index.js
+          fi
+
+      - name: Record successful run
+        if: ${{ inputs.dry_run != true }}
+        run: |
+          if git diff --quiet -- state/history.json; then
+            echo "No state change to commit."
+            exit 0
+          fi
+          git config user.name "Daily Project Agent"
+          git config user.email "actions@users.noreply.github.com"
+          git add state/history.json
+          git commit -m "Record daily project for $(date -u +%F)"
+          git push
