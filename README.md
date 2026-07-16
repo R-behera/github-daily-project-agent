@@ -19,6 +19,21 @@ One daily run produces three linked repositories:
 Every GitHub project is independent. It does not add unrelated files to an
 older project repository.
 
+## Portfolio Quality Standard
+
+Every generated project is designed around the following requirements:
+
+- Addresses a concrete industry problem rather than wrapping a model API.
+- Uses one or more named Hugging Face task categories.
+- Includes RAG, agent orchestration, evaluation, LLMOps, multimodal ML, graph,
+  or online-learning architecture where appropriate.
+- Names practical public data APIs and includes a runnable connector.
+- Defines a production stack and explains why each component exists.
+- Maps the project to skills found in AI engineering job descriptions.
+- Includes measurable resume impact targets.
+- Provides an 8-12 week solo-engineer roadmap.
+- Documents scalability, reliability, privacy, and failure recovery.
+
 ## Project Catalog
 
 The agent rotates through industry-relevant architectures:
@@ -42,7 +57,12 @@ observability, audio ML, and reinforcement learning.
 
 - `README.md` with purpose, quick start, and safety limitations
 - `ARCHITECTURE.md` with a Mermaid system diagram
+- `PRODUCTION.md` with public APIs, scalability, reliability, and security
+- `PORTFOLIO.md` with job mapping and resume-ready impact targets
+- `ROADMAP.md` with an 8-12 week solo delivery plan
 - `src/` Python inference pipeline
+- `src/.../service.py` runnable JSON HTTP service
+- `src/.../real_world.py` public-data connector
 - `train.py` reproducible baseline trainer
 - `evaluate.py` held-out evaluation and release gate
 - `tests/` unit tests
@@ -51,6 +71,7 @@ observability, audio ML, and reinforcement learning.
 - `MODEL_CARD.md` and `DATASET_CARD.md`
 - `SECURITY.md`
 - Dockerfile
+- Docker Compose with PostgreSQL/pgvector and OpenTelemetry Collector
 - GitHub Actions CI
 - MIT source-code license
 

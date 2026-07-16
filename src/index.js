@@ -102,7 +102,7 @@ try {
   hasMainBranch = false;
 }
 
-if (!hasMainBranch || repository.size === 0) {
+if (!hasMainBranch || repository.size === 0 || force) {
   await client.publishFiles(
     viewer.login,
     project.name,

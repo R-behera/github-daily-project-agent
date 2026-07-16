@@ -77,6 +77,11 @@ test("creates a deterministic valid project", async () => {
   assert.ok(first.files["README.md"].includes("example"));
   assert.ok(first.huggingFace.dataset.files["README.md"]);
   assert.ok(first.huggingFace.model.files["model.json"]);
+  assert.ok(first.files["PORTFOLIO.md"].includes("Job Description Mapping"));
+  assert.ok(first.files["PORTFOLIO.md"].includes("Resume-Ready Impact Targets"));
+  assert.ok(first.files["ROADMAP.md"].includes("12-Week"));
+  assert.ok(first.files["PRODUCTION.md"].includes("Real-World Data Sources"));
+  assert.ok(first.files["config/project.json"].includes("hugging_face_tasks"));
 });
 
 test("all industry rotations produce complete, runnable projects", async () => {
@@ -134,6 +139,16 @@ test("every generated architecture passes its own tests and evaluation", async (
         tests.status,
         0,
         `${project.blueprint}: ${tests.stderr || tests.stdout}`
+      );
+
+      const compile = spawnSync("python3", ["-m", "compileall", "-q", "src"], {
+        cwd: directory,
+        encoding: "utf8"
+      });
+      assert.equal(
+        compile.status,
+        0,
+        `${project.blueprint}: ${compile.stderr || compile.stdout}`
       );
 
       const evaluation = spawnSync("python3", ["evaluate.py"], {

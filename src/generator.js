@@ -75,9 +75,14 @@ export function validateProject(project) {
 
   for (const requiredFile of [
     "ARCHITECTURE.md",
+    "PRODUCTION.md",
+    "PORTFOLIO.md",
+    "ROADMAP.md",
+    "REFERENCES.md",
     "MODEL_CARD.md",
     "DATASET_CARD.md",
     "SECURITY.md",
+    "config/project.json",
     "artifacts/model.json",
     "data/train.jsonl",
     "data/test.jsonl"
