@@ -41,6 +41,20 @@
         "model": "https://huggingface.co/RKB109/hybrid-semantic-search-20260718-model"
       },
       "createdAt": "2026-07-18T14:32:23.127Z"
+    },
+    {
+      "date": "2026-07-19",
+      "repository": "R-behera/knowledge-graph-risk-engine-20260719",
+      "url": "https://github.com/R-behera/knowledge-graph-risk-engine-20260719",
+      "template": "industryProject",
+      "blueprint": "knowledge-graph-risk",
+      "architecture": "graph",
+      "huggingFace": {
+        "namespace": "RKB109",
+        "dataset": "https://huggingface.co/datasets/RKB109/knowledge-graph-risk-engine-20260719-dataset",
+        "model": "https://huggingface.co/RKB109/knowledge-graph-risk-engine-20260719-model"
+      },
+      "createdAt": "2026-07-19T14:35:24.270Z"
     }
   ]
 }
