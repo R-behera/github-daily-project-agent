@@ -55,6 +55,20 @@
         "model": "https://huggingface.co/RKB109/knowledge-graph-risk-engine-20260719-model"
       },
       "createdAt": "2026-07-19T14:35:24.270Z"
+    },
+    {
+      "date": "2026-07-20",
+      "repository": "R-behera/rag-evaluation-lab-20260720",
+      "url": "https://github.com/R-behera/rag-evaluation-lab-20260720",
+      "template": "industryProject",
+      "blueprint": "rag-evaluation",
+      "architecture": "classifier",
+      "huggingFace": {
+        "namespace": "RKB109",
+        "dataset": "https://huggingface.co/datasets/RKB109/rag-evaluation-lab-20260720-dataset",
+        "model": "https://huggingface.co/RKB109/rag-evaluation-lab-20260720-model"
+      },
+      "createdAt": "2026-07-20T15:21:51.650Z"
     }
   ]
 }
