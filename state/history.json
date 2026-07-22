@@ -69,6 +69,20 @@
         "model": "https://huggingface.co/RKB109/rag-evaluation-lab-20260720-model"
       },
       "createdAt": "2026-07-20T15:21:51.650Z"
+    },
+    {
+      "date": "2026-07-22",
+      "repository": "R-behera/support-routing-ml-20260722",
+      "url": "https://github.com/R-behera/support-routing-ml-20260722",
+      "template": "industryProject",
+      "blueprint": "support-routing-ml",
+      "architecture": "classifier",
+      "huggingFace": {
+        "namespace": "RKB109",
+        "dataset": "https://huggingface.co/datasets/RKB109/support-routing-ml-20260722-dataset",
+        "model": "https://huggingface.co/RKB109/support-routing-ml-20260722-model"
+      },
+      "createdAt": "2026-07-22T15:17:50.902Z"
     }
   ]
 }
