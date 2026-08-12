@@ -349,6 +349,20 @@
         "model": "https://huggingface.co/RKB109/support-routing-ml-20260811-model"
       },
       "createdAt": "2026-08-11T14:32:16.067Z"
+    },
+    {
+      "date": "2026-08-12",
+      "repository": "R-behera/multimodal-document-retrieval-20260812",
+      "url": "https://github.com/R-behera/multimodal-document-retrieval-20260812",
+      "template": "industryProject",
+      "blueprint": "multimodal-document-retrieval",
+      "architecture": "retrieval",
+      "huggingFace": {
+        "namespace": "RKB109",
+        "dataset": "https://huggingface.co/datasets/RKB109/multimodal-document-retrieval-20260812-dataset",
+        "model": "https://huggingface.co/RKB109/multimodal-document-retrieval-20260812-model"
+      },
+      "createdAt": "2026-08-12T14:33:00.676Z"
     }
   ]
 }
