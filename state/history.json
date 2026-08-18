@@ -405,6 +405,20 @@
         "model": "https://huggingface.co/RKB109/agentic-incident-response-20260816-model"
       },
       "createdAt": "2026-08-16T13:45:13.672Z"
+    },
+    {
+      "date": "2026-08-18",
+      "repository": "R-behera/knowledge-graph-risk-engine-20260818",
+      "url": "https://github.com/R-behera/knowledge-graph-risk-engine-20260818",
+      "template": "industryProject",
+      "blueprint": "knowledge-graph-risk",
+      "architecture": "graph",
+      "huggingFace": {
+        "namespace": "RKB109",
+        "dataset": "https://huggingface.co/datasets/RKB109/knowledge-graph-risk-engine-20260818-dataset",
+        "model": "https://huggingface.co/RKB109/knowledge-graph-risk-engine-20260818-model"
+      },
+      "createdAt": "2026-08-18T13:57:07.398Z"
     }
   ]
 }
