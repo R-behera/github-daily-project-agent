@@ -503,6 +503,20 @@
         "model": "https://huggingface.co/RKB109/contextual-bandit-simulator-20260824-model"
       },
       "createdAt": "2026-08-24T14:03:26.091Z"
+    },
+    {
+      "date": "2026-08-25",
+      "repository": "R-behera/clinical-rag-safety-gateway-20260825",
+      "url": "https://github.com/R-behera/clinical-rag-safety-gateway-20260825",
+      "template": "industryProject",
+      "blueprint": "clinical-rag-safety",
+      "architecture": "retrieval",
+      "huggingFace": {
+        "namespace": "RKB109",
+        "dataset": "https://huggingface.co/datasets/RKB109/clinical-rag-safety-gateway-20260825-dataset",
+        "model": "https://huggingface.co/RKB109/clinical-rag-safety-gateway-20260825-model"
+      },
+      "createdAt": "2026-08-25T14:04:40.856Z"
     }
   ]
 }
