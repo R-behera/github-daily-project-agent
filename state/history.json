@@ -601,6 +601,20 @@
         "model": "https://huggingface.co/RKB109/multimodal-document-retrieval-20260901-model"
       },
       "createdAt": "2026-09-01T17:20:00.144Z"
+    },
+    {
+      "date": "2026-09-02",
+      "repository": "R-behera/audio-event-triage-20260902",
+      "url": "https://github.com/R-behera/audio-event-triage-20260902",
+      "template": "industryProject",
+      "blueprint": "audio-event-triage",
+      "architecture": "classifier",
+      "huggingFace": {
+        "namespace": "RKB109",
+        "dataset": "https://huggingface.co/datasets/RKB109/audio-event-triage-20260902-dataset",
+        "model": "https://huggingface.co/RKB109/audio-event-triage-20260902-model"
+      },
+      "createdAt": "2026-09-02T17:10:51.160Z"
     }
   ]
 }
