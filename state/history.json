@@ -643,6 +643,20 @@
         "model": "https://huggingface.co/RKB109/clinical-rag-safety-gateway-20260904-model"
       },
       "createdAt": "2026-09-04T16:52:59.926Z"
+    },
+    {
+      "date": "2026-09-05",
+      "repository": "R-behera/agentic-incident-response-20260905",
+      "url": "https://github.com/R-behera/agentic-incident-response-20260905",
+      "template": "industryProject",
+      "blueprint": "agentic-incident-response",
+      "architecture": "agent",
+      "huggingFace": {
+        "namespace": "RKB109",
+        "dataset": "https://huggingface.co/datasets/RKB109/agentic-incident-response-20260905-dataset",
+        "model": "https://huggingface.co/RKB109/agentic-incident-response-20260905-model"
+      },
+      "createdAt": "2026-09-05T16:05:19.364Z"
     }
   ]
 }
