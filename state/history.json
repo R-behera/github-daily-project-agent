@@ -825,6 +825,20 @@
         "model": "https://huggingface.co/RKB109/rag-evaluation-lab-20260918-model"
       },
       "createdAt": "2026-09-18T17:06:07.260Z"
+    },
+    {
+      "date": "2026-09-19",
+      "repository": "R-behera/production-ai-observability-20260919",
+      "url": "https://github.com/R-behera/production-ai-observability-20260919",
+      "template": "industryProject",
+      "blueprint": "ai-observability",
+      "architecture": "classifier",
+      "huggingFace": {
+        "namespace": "RKB109",
+        "dataset": "https://huggingface.co/datasets/RKB109/production-ai-observability-20260919-dataset",
+        "model": "https://huggingface.co/RKB109/production-ai-observability-20260919-model"
+      },
+      "createdAt": "2026-09-19T16:31:08.627Z"
     }
   ]
 }
