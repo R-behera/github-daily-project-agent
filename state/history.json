@@ -1049,6 +1049,20 @@
         "model": "https://huggingface.co/RKB109/clinical-rag-safety-gateway-20261004-model"
       },
       "createdAt": "2026-10-04T17:35:38.827Z"
+    },
+    {
+      "date": "2026-10-06",
+      "repository": "R-behera/hybrid-semantic-search-20261006",
+      "url": "https://github.com/R-behera/hybrid-semantic-search-20261006",
+      "template": "industryProject",
+      "blueprint": "hybrid-semantic-search",
+      "architecture": "retrieval",
+      "huggingFace": {
+        "namespace": "RKB109",
+        "dataset": "https://huggingface.co/datasets/RKB109/hybrid-semantic-search-20261006-dataset",
+        "model": "https://huggingface.co/RKB109/hybrid-semantic-search-20261006-model"
+      },
+      "createdAt": "2026-10-06T18:55:13.776Z"
     }
   ]
 }
