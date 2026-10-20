@@ -1245,6 +1245,20 @@
         "model": "https://huggingface.co/RKB109/production-ai-observability-20261019-model"
       },
       "createdAt": "2026-10-19T19:20:38.475Z"
+    },
+    {
+      "date": "2026-10-20",
+      "repository": "R-behera/support-routing-ml-20261020",
+      "url": "https://github.com/R-behera/support-routing-ml-20261020",
+      "template": "industryProject",
+      "blueprint": "support-routing-ml",
+      "architecture": "classifier",
+      "huggingFace": {
+        "namespace": "RKB109",
+        "dataset": "https://huggingface.co/datasets/RKB109/support-routing-ml-20261020-dataset",
+        "model": "https://huggingface.co/RKB109/support-routing-ml-20261020-model"
+      },
+      "createdAt": "2026-10-20T17:59:44.432Z"
     }
   ]
 }
