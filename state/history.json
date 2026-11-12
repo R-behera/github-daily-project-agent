@@ -1567,6 +1567,20 @@
         "model": "https://huggingface.co/RKB109/audio-event-triage-20261111-model"
       },
       "createdAt": "2026-11-11T21:26:39.218Z"
+    },
+    {
+      "date": "2026-11-12",
+      "repository": "R-behera/contextual-bandit-simulator-20261112",
+      "url": "https://github.com/R-behera/contextual-bandit-simulator-20261112",
+      "template": "industryProject",
+      "blueprint": "contextual-bandit",
+      "architecture": "agent",
+      "huggingFace": {
+        "namespace": "RKB109",
+        "dataset": "https://huggingface.co/datasets/RKB109/contextual-bandit-simulator-20261112-dataset",
+        "model": "https://huggingface.co/RKB109/contextual-bandit-simulator-20261112-model"
+      },
+      "createdAt": "2026-11-12T21:28:55.687Z"
     }
   ]
 }
