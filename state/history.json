@@ -1735,6 +1735,20 @@
         "model": "https://huggingface.co/RKB109/agentic-incident-response-20261124-model"
       },
       "createdAt": "2026-11-24T01:40:48.107Z"
+    },
+    {
+      "date": "2026-11-25",
+      "repository": "R-behera/hybrid-semantic-search-20261125",
+      "url": "https://github.com/R-behera/hybrid-semantic-search-20261125",
+      "template": "industryProject",
+      "blueprint": "hybrid-semantic-search",
+      "architecture": "retrieval",
+      "huggingFace": {
+        "namespace": "RKB109",
+        "dataset": "https://huggingface.co/datasets/RKB109/hybrid-semantic-search-20261125-dataset",
+        "model": "https://huggingface.co/RKB109/hybrid-semantic-search-20261125-model"
+      },
+      "createdAt": "2026-11-25T23:06:12.605Z"
     }
   ]
 }
